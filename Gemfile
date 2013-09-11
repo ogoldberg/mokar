@@ -49,4 +49,3 @@ gem "rails_admin", git: "git://github.com/sferik/rails_admin.git"
 gem "rspec-rails", ">= 2.0.1", group: [:development, :test]
 gem "slim"
 gem "slim-rails"
-gem "mongoid", ">= 2.0.0.beta.19"
