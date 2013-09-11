@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Mokar::Application.config.secret_key_base = '26ed07afef4b3d032f97dfc3b9f58ba5c4061a82bf34165e97c454c14baf0d47c000562754e0486ef1f4ba8a692e3037b44490c499615c0edb3b21c39d6ddc08'
+Mokar::Application.config.secret_key_base = '3bf0b794f9c7cfc60fe8223f11e5acafa2fe9d2e32b17d6c8aa0de9e06f2f16c814bb7b0c3a4eed526551f7c9e63da6c92ee7bdddad63c58c4843244c345295b'
