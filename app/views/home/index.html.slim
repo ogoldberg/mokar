@@ -2,10 +2,8 @@ h3 Home
 
 -if user_signed_in?
   = current_user.name
+  h4 Your history
   - @transactions.each do |transaction|
-    =User.find(transaction.recipient_id)
-  / h4 Your history
-  / - @transactions.each do |transaction|
-  /   p #{(transaction.giver == current_user) ? "you" : link_to(transaction.giver.name,transaction.giver)} gave 
-  /      #{(transaction.recipient == current_user) ? "you" : transaction.recipient.name} #{transaction.point_ids.count} points 
-  /      #{time_ago_in_words(transaction.created_at)} ago.
+    p #{(transaction.giver == current_user) ? "you" : link_to(transaction.giver.name,transaction.giver)} gave 
+       #{(transaction.recipient == current_user) ? "you" : transaction.recipient.name} #{transaction.point_ids.count} points 
+       #{time_ago_in_words(transaction.created_at)} ago.
