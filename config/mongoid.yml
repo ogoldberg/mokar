@@ -1,12 +1,3 @@
-<% if ENV['MONGOHQ_URL'] %>
-<% mongohq = URI.parse(ENV['MONGOHQ_URL']) %>
-mongohq:
-  host: <%= mongohq.host %>
-  port: <%= mongohq.port %>
-  database: <%= mongohq.path.sub '/', '' %>
-  username: <%= mongohq.user %>
-  password: <%= mongohq.password %>
-<% end %>
 development:
   # Configure available database sessions. (required)
   sessions:

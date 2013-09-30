@@ -36,16 +36,50 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-
-gem "capybara", group: [:development, :test]
+gem "bootstrap-sass"
+gem 'simple_form', git: 'git://github.com/plataformatec/simple_form.git'
 gem "devise"
 gem "haml", ">= 3.0.0"
 gem "haml-rails"
 gem "jquery-rails"
-gem "bson_ext"
 gem "mongoid", github: "mongoid/mongoid"
-gem "omniauth", "~> 0.2.0"
+gem "omniauth"
 gem "rails_admin", git: "git://github.com/sferik/rails_admin.git"
-gem "rspec-rails", ">= 2.0.1", group: [:development, :test]
-gem "slim"
 gem "slim-rails"
+gem "figaro"
+
+group :development, :test do
+  gem "rspec-rails"
+  gem "dotenv-rails"
+  gem "guard-rspec"
+  gem "guard-spork"
+  gem "guard-sidekiq"
+  gem "guard-unicorn"
+end
+
+group :development do
+  gem "awesome_print"
+  gem "gem-open"
+  gem "better_errors"
+  gem "binding_of_caller"
+  gem "webrick", "~> 1.3.1"
+  gem "debugger"
+  gem "redcarpet"
+  #gem "debugger-ruby_core_source"
+  #gem "ruby-debug-base19x"
+  #gem "ruby-debug-ide"
+end
+
+group :test do
+  gem "spork"
+  gem "database_cleaner"
+  gem "shoulda"
+  gem "shoulda-matchers"
+  gem "factory_girl_rails", :require => false
+  gem "faker"
+  gem "simplecov"
+  gem "capybara"
+  gem "poltergeist"
+  gem "webmock"
+  gem "vcr"
+end

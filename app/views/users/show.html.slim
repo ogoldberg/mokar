@@ -1,0 +1,14 @@
+h3 User
+p
+  | User: #{@user.name}
+p
+  | Email: #{@user.email if @user.email}
+p
+  | Point total: #{@user.point_balance}
+p.transaction_form
+  = simple_form_for @transaction do |f|
+    = f.input :points, as: :integer, 
+                       label: "Give #{@user.name} some points!", input_html: {max: current_user.point_balance}
+    = f.input :recipient, as: :hidden, input_html: {value: @user.id}
+    = f.input :giver, as: :hidden, input_html: {value: current_user.id}
+    = f.button :submit, "Give points"

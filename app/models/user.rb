@@ -1,5 +1,43 @@
 class User
   include Mongoid::Document
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
+
+  ## Database authenticatable
+  field :name,               :type => String, :default => ""
+  field :username,           :type => String, :default => ""
+  field :email,              :type => String, :default => ""
+  field :encrypted_password, :type => String, :default => ""
+
+  ## Recoverable
+  field :reset_password_token,   :type => String
+  field :reset_password_sent_at, :type => Time
+
+  ## Rememberable
+  field :remember_created_at, :type => Time
+
+  ## Trackable
+  field :sign_in_count,      :type => Integer, :default => 0
+  field :current_sign_in_at, :type => Time
+  field :last_sign_in_at,    :type => Time
+  field :current_sign_in_ip, :type => String
+  field :last_sign_in_ip,    :type => String
+
+  ## Confirmable
+  # field :confirmation_token,   :type => String
+  # field :confirmed_at,         :type => Time
+  # field :confirmation_sent_at, :type => Time
+  # field :unconfirmed_email,    :type => String # Only if using reconfirmable
+
+  ## Lockable
+  # field :failed_attempts, :type => Integer, :default => 0 # Only if lock strategy is :failed_attempts
+  # field :unlock_token,    :type => String # Only if unlock strategy is :email or :both
+  # field :locked_at,       :type => Time
+
+  ## Token authenticatable
+  # field :authentication_token, :type => String
   include Mongoid::Timestamps
 
   # Include default devise modules. Others available are:
@@ -12,8 +50,11 @@ class User
   field :email,              :type => String, :default => ""
   field :encrypted_password, :type => String, :default => ""
 
+  validates_presence_of :name
+  validates_presence_of :username
   validates_presence_of :email
   validates_presence_of :encrypted_password
+  validates :username,:uniqueness => { :case_sensitive => false }
   
   ## Recoverable
   field :reset_password_token,   :type => String
@@ -44,7 +85,50 @@ class User
   # field :authentication_token, :type => String
   # run 'rake db:mongoid:create_indexes' to create indexes
   index({ email: 1 }, { unique: true, background: true })
-  field :name, :type => String
-  validates_presence_of :name
   #attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :created_at, :updated_at
+
+  has_many :sent_transactions, class_name: "Transaction", inverse_of: "giver"
+  has_many :received_transactions, class_name: "Transaction", inverse_of: "recipient"
+
+  def self.find_for_database_authentication(warden_conditions)
+    conditions = warden_conditions.dup
+    if login = conditions.delete(:login).downcase
+      where(conditions).where('$or' => [ {:username => /^#{Regexp.escape(login)}$/i}, {:email => /^#{Regexp.escape(login)}$/i} ]).first
+    else
+      where(conditions).first
+    end
+  end 
+
+  after_create do
+    point_initializer
+  end
+
+  def point_initializer    
+    transaction = Transaction.create!(recipient_id: id, giver_id: User.find_by(email: ENV["ADMIN_EMAIL"]).id, point_ids: [])
+    100.times { transaction.add_new_point}
+  end
+
+  def user_transactions
+    (sent_transactions + received_transactions).sort_by(&:created_at)
+  end
+
+  def point_balance
+    received_point_total - sent_point_total
+  end
+
+  def received_point_total
+    total = 0
+    received_transactions.each do |transaction|
+      total += transaction.point_ids.count
+    end
+    total
+  end
+
+  def sent_point_total
+    total = 0
+    sent_transactions.each do |transaction|
+      total += transaction.point_ids.count
+    end
+    total
+  end
 end
